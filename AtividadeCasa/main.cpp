@@ -57,9 +57,9 @@ int main(int argc, char *argv[])
             fprintf(planilha,"%d;",tipoQuadrado);
             fprintf(planilha,"%d;",dim);
             fprintf(planilha,"%d;",dim);
-            fprintf(planilha,"%d;",dim/3);
-            fprintf(planilha,"%d;",dim/3);
-            fprintf(planilha,"%d;",dim/3);
+            fprintf(planilha,"%d;",dim);
+            fprintf(planilha,"%d;",dim);
+            fprintf(planilha,"%d;",dim);
             fprintf(planilha,"\n");
             break;
 
@@ -96,6 +96,16 @@ int main(int argc, char *argv[])
                     for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA ++){
 
 
+                        if (LINHA == pontoLinhaSuperior && COLUNA == pos) {
+
+                            for (int NOVACOLUNA = 0; NOVACOLUNA < imagem.cols; NOVACOLUNA++) {
+
+                                imagem.at<uchar>(LINHA, NOVACOLUNA) = NIVELMINIMOCOR;
+                            }
+                        }
+
+
+
                         if (LINHA == pontoLinhaInferior && COLUNA == pos) {
                             printf("Estamos na parte Inferior! Linha : %d  Coluna: %d\n", LINHA, COLUNA);
 
@@ -113,10 +123,10 @@ int main(int argc, char *argv[])
                                            imagem.at<uchar>(LINHA, NOVACOLUNA + 1) == NIVELMINIMOCOR) {
                                     largura2 = NOVACOLUNA;
                                 }
+
+                                imagem.at<uchar>(LINHA, NOVACOLUNA) = NIVELMINIMOCOR;
                             }
                        }
-
-
 
 
                     }

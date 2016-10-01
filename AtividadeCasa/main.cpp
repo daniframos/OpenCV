@@ -6,11 +6,11 @@
 #include "QDebug"
 #include <time.h>
 
-#define tipoQuadrado 0
-#define tipoCirculo  1
+#define TIPOQUADRADO 0
+#define TIPOCIRCULO  1
 #define MAX 40
-#define NIVELMAXIMOCOR 255 // Branco
-#define NIVELMINIMOCOR 0 // Preto
+#define INTESIDADEMAXIMACOR 255 // Branco
+#define INTENSIDADEMINIMACOR 0 // Preto
 #define QTDOBJ 4
 
 using namespace cv;
@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
     srand(time(NULL));
     FILE * planilha;
     char nome[30];
+
     int corte1;
     int meuDim;
     int meuIni;
@@ -44,7 +45,6 @@ int main(int argc, char *argv[])
             {
 
                 imagem.at<uchar>(i,j)=0;
-
             }
         }
 
@@ -55,36 +55,13 @@ int main(int argc, char *argv[])
         {
 
         //gerando um quadrado de tamanho aleatorio
-        case tipoQuadrado:
+        case TIPOQUADRADO:
 
             dim=rand()%300;
-
             ini=rand()%200;
             //printf("dim %d \n",dim);
 
-            rectangle(imagem,Point(ini,ini),Point(ini+dim,ini+dim),Scalar(255),-1,8,0);
-
-            for(int LINHA = 0; LINHA < imagem.rows; LINHA ++) {
-                for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA ++){
-                    if (imagem.at<uchar>(LINHA, COLUNA) == NIVELMAXIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA+1) == NIVELMAXIMOCOR &&
-                            imagem.at<uchar>(LINHA-1, COLUNA) == NIVELMINIMOCOR &&
-                            imagem.at<uchar>(LINHA+1, COLUNA) == NIVELMAXIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA-1) == NIVELMINIMOCOR) {
-                        // printf("Linha: %d Coluna %d Nivel de Cor %d\n",LINHA, COLUNA, imagem.at<uchar>(LINHA, COLUNA));
-                        linhasuperior = LINHA;
-                    }
-
-                    if (imagem.at<uchar>(LINHA, COLUNA) == NIVELMAXIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA+1) == NIVELMAXIMOCOR &&
-                            imagem.at<uchar>(LINHA-1, COLUNA) == NIVELMAXIMOCOR &&
-                            imagem.at<uchar>(LINHA+1, COLUNA) == NIVELMINIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA-1) == NIVELMINIMOCOR) {
-                        // printf("Linha: %d Coluna %d Nivel de Cor %d\n",LINHA, COLUNA, imagem.at<uchar>(LINHA, COLUNA));
-                        linhainferior = LINHA;
-                    }
-                }
-            }
+            rectangle(imagem,Point(ini,ini),Point(ini+dim,ini+dim),Scalar(255),-1,8,0);            
 
             meuIni = linhasuperior;
             meuDim = linhainferior - linhasuperior;
@@ -97,7 +74,7 @@ int main(int argc, char *argv[])
 
             //printf("dim+ini %d \n",dim+ini);
             //imprimindo dados no arquivo .csv
-            fprintf(planilha,"%d;",tipoQuadrado);
+            fprintf(planilha,"%d;",TIPOQUADRADO);
 
             fprintf(planilha,"%d;",meuDim/4);
             fprintf(planilha,"%d;",meuDim); // Ele considera 1 pixel na largura
@@ -109,7 +86,7 @@ int main(int argc, char *argv[])
             break;
 
             //gerando um circulo de tamanho aleatorio
-        case tipoCirculo:
+        case TIPOCIRCULO:
             //printf("Circulo Gerado\n");
             pos=(imagem.cols/2)+rand()%100;
             raio=rand()%90+10;
@@ -119,7 +96,7 @@ int main(int argc, char *argv[])
             line(imagem, Point(pos/raio,pos), Point(raio+pos,pos),Scalar(0,255,0),1,8);
 
             //imprimindo dados no arquivo .csv
-            fprintf(planilha,"%d;",tipoCirculo);
+            fprintf(planilha,"%d;",TIPOCIRCULO);
             fprintf(planilha,"%d;",raio*2);
             fprintf(planilha,"%d;",raio*2);
 
@@ -142,18 +119,18 @@ int main(int argc, char *argv[])
 
             for(int LINHA = 0; LINHA < imagem.rows; LINHA ++) {
                 for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA ++){
-                    if (imagem.at<uchar>(LINHA, COLUNA) == NIVELMAXIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA+1) == NIVELMINIMOCOR &&
-                            imagem.at<uchar>(LINHA+1, COLUNA) == NIVELMINIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA-1) == NIVELMINIMOCOR) {
+                    if (imagem.at<uchar>(LINHA, COLUNA) == INTESIDADEMAXIMACOR &&
+                            imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMINIMACOR &&
+                            imagem.at<uchar>(LINHA+1, COLUNA) == INTENSIDADEMINIMACOR &&
+                            imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR) {
                         // printf("Linha: %d Coluna %d Nivel de Cor %d\n",LINHA, COLUNA, imagem.at<uchar>(LINHA, COLUNA));
                         linhainferior = LINHA;
                     }
 
-                    if (imagem.at<uchar>(LINHA, COLUNA) == NIVELMAXIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA+1) == NIVELMINIMOCOR &&
-                            imagem.at<uchar>(LINHA-1, COLUNA) == NIVELMINIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA-1) == NIVELMINIMOCOR) {
+                    if (imagem.at<uchar>(LINHA, COLUNA) == INTESIDADEMAXIMACOR &&
+                            imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMINIMACOR &&
+                            imagem.at<uchar>(LINHA-1, COLUNA) == INTENSIDADEMINIMACOR &&
+                            imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR) {
                         // printf("Linha: %d Coluna %d Nivel de Cor %d\n",LINHA, COLUNA, imagem.at<uchar>(LINHA, COLUNA));
                         linhasuperior = LINHA;
                     }
@@ -168,18 +145,18 @@ int main(int argc, char *argv[])
 
             for(int LINHA = 0; LINHA < imagem.rows; LINHA ++) {
                 for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA ++){
-                    if (imagem.at<uchar>(LINHA, COLUNA) == NIVELMAXIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA+1) == NIVELMINIMOCOR &&
-                            imagem.at<uchar>(LINHA+1, COLUNA) == NIVELMINIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA-1) == NIVELMINIMOCOR) {
+                    if (imagem.at<uchar>(LINHA, COLUNA) == INTESIDADEMAXIMACOR &&
+                            imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMINIMACOR &&
+                            imagem.at<uchar>(LINHA+1, COLUNA) == INTENSIDADEMINIMACOR &&
+                            imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR) {
                         // printf("Linha: %d Coluna %d Nivel de Cor %d\n",LINHA, COLUNA, imagem.at<uchar>(LINHA, COLUNA));
                         linhainferior = LINHA;
                     }
 
-                    if (imagem.at<uchar>(LINHA, COLUNA) == NIVELMAXIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA+1) == NIVELMINIMOCOR &&
-                            imagem.at<uchar>(LINHA-1, COLUNA) == NIVELMINIMOCOR &&
-                            imagem.at<uchar>(LINHA, COLUNA-1) == NIVELMINIMOCOR) {
+                    if (imagem.at<uchar>(LINHA, COLUNA) == INTESIDADEMAXIMACOR &&
+                            imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMINIMACOR &&
+                            imagem.at<uchar>(LINHA-1, COLUNA) == INTENSIDADEMINIMACOR &&
+                            imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR) {
                         // printf("Linha: %d Coluna %d Nivel de Cor %d\n",LINHA, COLUNA, imagem.at<uchar>(LINHA, COLUNA));
                         linhasuperior = LINHA;
                     }
@@ -191,16 +168,16 @@ int main(int argc, char *argv[])
 
                             // printf("Nivel de cor em Linha %d Coluna %d eh %d\n", LINHA, NOVACOLUNA, imagem.at<uchar>(LINHA, NOVACOLUNA));
 
-                            if (imagem.at<uchar>(LINHA, NOVACOLUNA) == NIVELMAXIMOCOR &&
-                                    imagem.at<uchar>(LINHA, NOVACOLUNA+1) == NIVELMINIMOCOR  &&
-                                    imagem.at<uchar>(LINHA, NOVACOLUNA-1) == NIVELMAXIMOCOR) {
+                            if (imagem.at<uchar>(LINHA, NOVACOLUNA) == INTESIDADEMAXIMACOR &&
+                                    imagem.at<uchar>(LINHA, NOVACOLUNA+1) == INTENSIDADEMINIMACOR  &&
+                                    imagem.at<uchar>(LINHA, NOVACOLUNA-1) == INTESIDADEMAXIMACOR) {
                                 largura2 = NOVACOLUNA;
                                 //   printf("Largura1 %d", largura1);
                             }
 
-                            if (imagem.at<uchar>(LINHA, NOVACOLUNA) == NIVELMAXIMOCOR &&
-                                    imagem.at<uchar>(LINHA, NOVACOLUNA- 1) == NIVELMINIMOCOR &&
-                                    imagem.at<uchar>(LINHA, NOVACOLUNA + 1) == NIVELMAXIMOCOR) {
+                            if (imagem.at<uchar>(LINHA, NOVACOLUNA) == INTESIDADEMAXIMACOR &&
+                                    imagem.at<uchar>(LINHA, NOVACOLUNA- 1) == INTENSIDADEMINIMACOR &&
+                                    imagem.at<uchar>(LINHA, NOVACOLUNA + 1) == INTESIDADEMAXIMACOR) {
                                 largura1 = NOVACOLUNA;
                             }
 
@@ -209,13 +186,13 @@ int main(int argc, char *argv[])
 
 
                         for (int NOVACOLUNA = 0; NOVACOLUNA < imagem.cols; NOVACOLUNA++) {
-                            imagem.at<uchar>(LINHA, NOVACOLUNA) = NIVELMINIMOCOR;
+                            imagem.at<uchar>(LINHA, NOVACOLUNA) = INTENSIDADEMINIMACOR;
                         }
                     }
 
                     if (LINHA == pontoLinhaSuperior && COLUNA == posDoCirculo) {
                         for (int NOVACOLUNA = 0; NOVACOLUNA < imagem.cols; NOVACOLUNA++) {
-                            imagem.at<uchar>(LINHA, NOVACOLUNA) = NIVELMINIMOCOR;
+                            imagem.at<uchar>(LINHA, NOVACOLUNA) = INTENSIDADEMINIMACOR;
                         }
                     }
                 }
@@ -246,4 +223,48 @@ int main(int argc, char *argv[])
 
     fclose(planilha);
     return 0;
+}
+
+
+int GerarDiametroImagem(Mat imagem, int tipoImagem)
+{
+    if (tipoImagem == TIPOQUADRADO)
+    {
+        int diametro;
+        int pontoSuperior;
+        int pontoInferior;
+
+        for(int LINHA = 0; LINHA < imagem.rows; LINHA ++)
+        {
+            for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA ++)
+            {
+                if (imagem.at<uchar>(LINHA, COLUNA) == INTESIDADEMAXIMACOR &&
+                        imagem.at<uchar>(LINHA, COLUNA+1) == INTESIDADEMAXIMACOR &&
+                        imagem.at<uchar>(LINHA-1, COLUNA) == INTENSIDADEMINIMACOR &&
+                        imagem.at<uchar>(LINHA+1, COLUNA) == INTESIDADEMAXIMACOR &&
+                        imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR)
+                {
+                    pontoSuperior = LINHA;
+                }
+
+                if (imagem.at<uchar>(LINHA, COLUNA) == INTESIDADEMAXIMACOR &&
+                        imagem.at<uchar>(LINHA, COLUNA+1) == INTESIDADEMAXIMACOR &&
+                        imagem.at<uchar>(LINHA-1, COLUNA) == INTESIDADEMAXIMACOR &&
+                        imagem.at<uchar>(LINHA+1, COLUNA) == INTENSIDADEMINIMACOR &&
+                        imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR)
+                {
+                    pontoInferior = LINHA;
+                }
+            }
+        }
+        diametro = pontoInferior - pontoSuperior;
+        return diametro;
+    }
+    else if (tipoImagem == TIPOCIRCULO)
+    {
+
+    }
+    else
+        // Imagem inválida
+        return -1;
 }

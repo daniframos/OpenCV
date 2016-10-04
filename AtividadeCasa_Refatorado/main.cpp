@@ -17,98 +17,50 @@ using namespace cv;
 using namespace std;
 //--------------------------------------------------------X----------------------------------------------------------//
 
-int BuscarPontoSuperior(Mat imagem, int tipoImagem)
+int BuscarPrimeiroPonto(Mat imagem)
 {
-    if (tipoImagem == TIPOQUADRADO)
-    {
-        int pontoSuperior;
+    int primeiroPonto = -1;
 
-        for(int LINHA = 0; LINHA < imagem.rows; LINHA ++)
+    for(int LINHA = 0; LINHA < imagem.rows; LINHA ++)
+    {
+        for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA ++)
         {
-            for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA ++)
+            if (imagem.at<uchar>(LINHA, COLUNA) == INTENSIDADEMAXIMACOR &&
+                    imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMAXIMACOR &&
+                    imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR &&
+                    imagem.at<uchar>(LINHA-1, COLUNA) == INTENSIDADEMINIMACOR &&
+                    imagem.at<uchar>(LINHA+1, COLUNA) == INTENSIDADEMAXIMACOR)
             {
-                if (imagem.at<uchar>(LINHA, COLUNA) == INTENSIDADEMAXIMACOR &&
-                        imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMAXIMACOR &&
-                        imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR &&
-                        imagem.at<uchar>(LINHA-1, COLUNA) == INTENSIDADEMINIMACOR &&
-                        imagem.at<uchar>(LINHA+1, COLUNA) == INTENSIDADEMAXIMACOR)
-                {
-                    pontoSuperior = LINHA;
-                    break;
-                }
+                primeiroPonto = LINHA;
+                return primeiroPonto;
             }
         }
-        return pontoSuperior;
     }
-    else if (tipoImagem == TIPOCIRCULO)
-    {
-        int pontoSuperior;
-
-        for(int LINHA = 0; LINHA < imagem.rows; LINHA ++)
-        {
-            for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA ++)
-            {
-                if (imagem.at<uchar>(LINHA, COLUNA) == INTENSIDADEMAXIMACOR &&
-                        imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMINIMACOR &&
-                        imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR &&
-                        imagem.at<uchar>(LINHA-1, COLUNA) == INTENSIDADEMINIMACOR &&
-                        imagem.at<uchar>(LINHA+1, COLUNA) == INTENSIDADEMAXIMACOR)
-                {
-                    pontoSuperior = LINHA;
-                    break;
-                }
-            }
-        }
-        return pontoSuperior;
-    }
-    else
-        return -1;
+    return primeiroPonto;
 }
 
-int BuscarPontoInferior(Mat imagem, int tipoImagem)
+int BuscarSegundoPonto(Mat imagem)
 {
-    int pontoInferior;
-    if (tipoImagem == TIPOQUADRADO)
-    {
-        for(int LINHA = 0; LINHA < imagem.rows; LINHA ++)
-        {
-            for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA++)
-            {
-                if (imagem.at<uchar>(LINHA, COLUNA) == INTENSIDADEMAXIMACOR &&
-                        imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMAXIMACOR &&
-                        imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR &&
-                        imagem.at<uchar>(LINHA-1, COLUNA) == INTENSIDADEMAXIMACOR &&
-                        imagem.at<uchar>(LINHA+1, COLUNA) == INTENSIDADEMINIMACOR)
-                {
-                    pontoInferior = LINHA;
-                    break;
-                }
-            }
-        }
+    int segundoPonto = -1;
 
-        return pontoInferior;
-    }
-    else if (tipoImagem == TIPOCIRCULO)
+    for(int LINHA = imagem.rows - 1; LINHA >= 0; LINHA --)
     {
-        for(int LINHA = 0; LINHA < imagem.rows; LINHA ++)
+        for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA++)
         {
-            for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA ++)
+            if (imagem.at<uchar>(LINHA, COLUNA) == INTENSIDADEMAXIMACOR &&
+                    imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMAXIMACOR &&
+                    imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR &&
+                    imagem.at<uchar>(LINHA-1, COLUNA) == INTENSIDADEMAXIMACOR &&
+                    imagem.at<uchar>(LINHA+1, COLUNA) == INTENSIDADEMINIMACOR)
             {
-                if (imagem.at<uchar>(LINHA, COLUNA) == INTENSIDADEMAXIMACOR &&
-                        imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMINIMACOR &&
-                        imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR &&
-                        imagem.at<uchar>(LINHA-1, COLUNA) == INTENSIDADEMAXIMACOR &&
-                        imagem.at<uchar>(LINHA+1, COLUNA) == INTENSIDADEMINIMACOR)
-                {
-                    pontoInferior = LINHA;
-                    break;
-                }
+                segundoPonto = LINHA;
+                return segundoPonto;
             }
         }
-        return pontoInferior;
     }
-    else
-        return -1;
+
+    return segundoPonto;
+
 }
 
 void DesenharLinha(Mat imagem, int linha, int intensidadeDeCor)
@@ -151,7 +103,7 @@ int main(int argc, char *argv[])
     FILE * planilha;
     char nome[30];
 
-    int diametro, pontoSuperior, pontoInferior, corte;
+    int diametro, primeiroPonto, segundoPonto, corte;
     int largura[3];
     planilha=fopen("dados.csv","w");
     fprintf(planilha,"Tipo;altura;largura;larg1;larg2;larg3\n");
@@ -180,17 +132,16 @@ int main(int argc, char *argv[])
             ini=rand()%200;
             rectangle(imagem,Point(ini,ini),Point(ini+dim,ini+dim),Scalar(255),-1,8,0);
 
-            pontoSuperior = BuscarPontoSuperior(imagem, TIPOQUADRADO);
-            pontoInferior = BuscarPontoInferior(imagem, TIPOQUADRADO);
-            diametro = pontoInferior - pontoSuperior;
+            primeiroPonto = BuscarPrimeiroPonto(imagem);
+            segundoPonto = BuscarSegundoPonto(imagem);
 
-            corte=diametro/QUANTIDADEPEDACOS;
-
+            diametro = segundoPonto - primeiroPonto;
+            corte = diametro/QUANTIDADEPEDACOS;
             // Começa por 1 já que o pedaço 0 é o ponto inicial
             for(int PEDACO=1;PEDACO<QUANTIDADEPEDACOS;PEDACO++)
             {
-                largura[PEDACO - 1] = BuscarLargura(imagem, pontoSuperior + (corte * PEDACO));
-                DesenharLinha(imagem, pontoSuperior + (corte * PEDACO), INTENSIDADEMINIMACOR);
+                largura[PEDACO - 1] = BuscarLargura(imagem, primeiroPonto + (corte * PEDACO));
+                DesenharLinha(imagem, primeiroPonto + (corte * PEDACO), INTENSIDADEMINIMACOR);
             }
 
             //imprimindo dados no arquivo .csv
@@ -210,16 +161,17 @@ int main(int argc, char *argv[])
             raio=rand()%90+10;
             circle(imagem,Point(pos,pos),raio,Scalar(255),-1,8,0);
 
-            pontoSuperior = BuscarPontoSuperior(imagem, TIPOCIRCULO);
-            pontoInferior = BuscarPontoInferior(imagem, TIPOCIRCULO);
-            diametro = pontoInferior - pontoSuperior;
+            primeiroPonto = BuscarPrimeiroPonto(imagem);
+            segundoPonto = BuscarSegundoPonto(imagem);
 
-            corte=diametro/QUANTIDADEPEDACOS;
+            diametro = segundoPonto - primeiroPonto;
+
+            corte = diametro/QUANTIDADEPEDACOS;
             // Começa por 1 já que o pedaço 0 é o ponto inicial
             for(int PEDACO=1;PEDACO<QUANTIDADEPEDACOS;PEDACO++)
             {
-                largura[PEDACO - 1] = BuscarLargura(imagem, pontoSuperior + (corte * PEDACO));
-                DesenharLinha(imagem, pontoSuperior + (corte * PEDACO), INTENSIDADEMINIMACOR);
+                largura[PEDACO - 1] = BuscarLargura(imagem, primeiroPonto + (corte * PEDACO));
+                DesenharLinha(imagem, primeiroPonto + (corte * PEDACO), INTENSIDADEMINIMACOR);
             }
 
             //imprimindo dados no arquivo .csv

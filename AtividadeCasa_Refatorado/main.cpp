@@ -25,11 +25,11 @@ int BuscarPrimeiroPonto(Mat imagem)
     {
         for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA ++)
         {
-            if (imagem.at<uchar>(LINHA, COLUNA) == INTENSIDADEMAXIMACOR &&
-                    imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMAXIMACOR &&
-                    imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR &&
-                    imagem.at<uchar>(LINHA-1, COLUNA) == INTENSIDADEMINIMACOR &&
-                    imagem.at<uchar>(LINHA+1, COLUNA) == INTENSIDADEMAXIMACOR)
+            if (imagem.at<uchar>(LINHA, COLUNA) > (INTENSIDADEMAXIMACOR - 15) &&
+                    imagem.at<uchar>(LINHA, COLUNA+1) > (INTENSIDADEMAXIMACOR - 15) &&
+                    imagem.at<uchar>(LINHA, COLUNA-1) < (INTENSIDADEMINIMACOR + 15) &&
+                    imagem.at<uchar>(LINHA-1, COLUNA) < (INTENSIDADEMINIMACOR + 15) &&
+                    imagem.at<uchar>(LINHA+1, COLUNA) > (INTENSIDADEMAXIMACOR - 15))
             {
                 primeiroPonto = LINHA;
                 return primeiroPonto;
@@ -47,11 +47,11 @@ int BuscarSegundoPonto(Mat imagem)
     {
         for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA++)
         {
-            if (imagem.at<uchar>(LINHA, COLUNA) == INTENSIDADEMAXIMACOR &&
-                    imagem.at<uchar>(LINHA, COLUNA+1) == INTENSIDADEMAXIMACOR &&
-                    imagem.at<uchar>(LINHA, COLUNA-1) == INTENSIDADEMINIMACOR &&
-                    imagem.at<uchar>(LINHA-1, COLUNA) == INTENSIDADEMAXIMACOR &&
-                    imagem.at<uchar>(LINHA+1, COLUNA) == INTENSIDADEMINIMACOR)
+            if (imagem.at<uchar>(LINHA, COLUNA) > (INTENSIDADEMAXIMACOR -15) &&
+                    imagem.at<uchar>(LINHA, COLUNA+1) > (INTENSIDADEMAXIMACOR - 15) &&
+                    imagem.at<uchar>(LINHA, COLUNA-1) < (INTENSIDADEMINIMACOR + 15) &&
+                    imagem.at<uchar>(LINHA-1, COLUNA) > (INTENSIDADEMAXIMACOR - 15) &&
+                    imagem.at<uchar>(LINHA+1, COLUNA) < (INTENSIDADEMINIMACOR + 15))
             {
                 segundoPonto = LINHA;
                 return segundoPonto;
@@ -76,16 +76,16 @@ int BuscarLargura(Mat imagem, int linha)
     int largura, primeiraColuna, segundaColuna;
     for(int COLUNA = 0; COLUNA < imagem.cols; COLUNA++)
     {
-        if (imagem.at<uchar>(linha, COLUNA) == INTENSIDADEMAXIMACOR &&
-                imagem.at<uchar>(linha, COLUNA-1) == INTENSIDADEMINIMACOR &&
-                imagem.at<uchar>(linha, COLUNA+1) == INTENSIDADEMAXIMACOR)
+        if (imagem.at<uchar>(linha, COLUNA) > (INTENSIDADEMAXIMACOR -15) &&
+                imagem.at<uchar>(linha, COLUNA-1) < (INTENSIDADEMINIMACOR + 15) &&
+                imagem.at<uchar>(linha, COLUNA+1) > (INTENSIDADEMAXIMACOR -15))
         {
             primeiraColuna = COLUNA;
         }
 
-        if (imagem.at<uchar>(linha, COLUNA) == INTENSIDADEMAXIMACOR &&
-                imagem.at<uchar>(linha, COLUNA-1) == INTENSIDADEMAXIMACOR &&
-                imagem.at<uchar>(linha, COLUNA+1) == INTENSIDADEMINIMACOR)
+        if (imagem.at<uchar>(linha, COLUNA) > (INTENSIDADEMAXIMACOR - 15) &&
+                imagem.at<uchar>(linha, COLUNA-1) > (INTENSIDADEMAXIMACOR - 15) &&
+                imagem.at<uchar>(linha, COLUNA+1) < (INTENSIDADEMINIMACOR + 15))
         {
             segundaColuna = COLUNA;
         }
@@ -93,6 +93,8 @@ int BuscarLargura(Mat imagem, int linha)
     largura = segundaColuna - primeiraColuna;
     return largura;
 }
+
+
 
 int main(int argc, char *argv[])
 {
